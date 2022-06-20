@@ -1,0 +1,40 @@
+ Question 2:
+(2) The trace of a square matrix is the sum of the elements on its main diagonal (from the top-left to the bottom-right). 
+Use a large number of randomly generated 2 × 2 matrices (with elements between −10 and 10) to investigate the following:
+
+Code:
+import numpy as np
+import matplotlib.pyplot as plt
+for i in range(1,10000):
+    M = np.random.randint(-10, 11, (2, 2))
+#a)   
+    M_t = M.trace() # trace of a matrix, sum of diagonal elements
+    M_det = np.linalg.det(M)
+    V, P = np.linalg.eig(M)
+    sum_eVal = V[0]+V[1]
+    np.isclose(sum_eVal,M_t)
+    prod_eVal = V[0]*V[1]
+    np.isclose(prod_eVal,M_det)
+#b)
+    matrix = M
+    matrix_t = matrix.T
+    symmetric_matrix = matrix + matrix_t - np.diag(matrix.diagonal())
+    SV, SP = np.linalg.eig(symmetric_matrix)
+    np.isreal(SV)
+    np.isreal(SP)
+#c)
+    A = M
+    t = A.trace()
+    d = np.linalg.det(A)
+    A2 = A@A
+    tA = t*A
+    dI = d*np.eye(2)
+    result = A2-tA+dI
+# result is a zero matrix
+(a) How the eigenvalues of a matrix are related to its trace and determinant. 
+The sum of eigenvalues equal to its trace of the matrix and the product of eigen values equal to its determinent of the matrix
+
+(b) Whether the eigenvalues of a symmetric matrix are real or complex numbers. 
+Eigen values of a symmetric matrix are real number.
+(c) For matrix 𝐴 what is the value of 𝐴 2 − 𝑡𝐴 + 𝑑𝐼 where 𝑡 is the trace of 𝐴, 𝑑 is the determinant of 𝐴, and 𝐼 is the identity matrix.
+Result is a zero matrix.
