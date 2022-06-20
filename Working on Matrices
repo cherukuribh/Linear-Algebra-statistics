@@ -1,0 +1,137 @@
+from scipy.stats import ortho_group
+import matplotlib.pyplot as plt
+import numpy as np
+M = ortho_group.rvs(dim=2)
+print(M)
+np.set_printoptions(suppress=True)
+print(M.dot(M.T))
+print(np.isclose(M.T@M, np.eye(2)))
+# M.T * M = I hence proved
+#splitting matrix M in to vectors m1 and m2
+m1, m2 = np.hsplit(M, 2)
+print(m1, "\n", m2)
+#finding magnitude of vectors m1,m2
+m1_mag = np.sqrt(m1[0]@m1[0]+m1[1]@m1[1])
+print('magnitude of m1 is a unit vector ', m1_mag)
+m2_mag = np.sqrt(m2[0]@m2[0]+m2[1]@m2[1])
+print('magnitude of m2 is a unit vector ', m2_mag)
+print(m1.T.dot(m1)) 
+print('vector m1 is orthogonal m1.T*m1 = 1')
+print(m2.T.dot(m2))
+print('vector m2 is orthogonal m2.T*m2 = 1')
+############################
+# Matrix transformations - rotation and reflection
+# # rotation by 90 degrees clockwise
+S = np.array([[0,1],[-1,0]])
+print(np.linalg.det(S))
+# transform a by M@a
+newa = S@m1
+print(newa)
+newb = S@m2
+print(newb)
+newM = S@M
+plt.figure()
+plt.plot([0,m1[0]],[0,m1[1]],'r-',linewidth=3)
+plt.plot([0,m2[0]],[0,m2[1]],'g-',linewidth=3)
+plt.plot(M[0],M[1],'b-',linewidth=3)
+plt.plot([0,newa[0]],[0,newa[1]],'r--')
+plt.plot([0,newb[0]],[0,newb[1]],'g--')
+plt.plot(newM[0],newM[1],'b--')
+plt.axis('equal')
+plt.grid()
+plt.show()
+# # rotation by 180 degrees
+S = np.array([[-1,0],[0,-1]])
+print(np.linalg.det(S))
+# transform a by M@a
+newa = S@m1
+print(newa)
+newb = S@m2
+print(newb)
+newM = S@M
+plt.figure()
+plt.plot([0,m1[0]],[0,m1[1]],'r-',linewidth=3)
+plt.plot([0,m2[0]],[0,m2[1]],'g-',linewidth=3)
+plt.plot(M[0],M[1],'b-',linewidth=3)
+plt.plot([0,newa[0]],[0,newa[1]],'r--')
+plt.plot([0,newb[0]],[0,newb[1]],'g--')
+plt.plot(newM[0],newM[1],'b--')
+plt.axis('equal')
+plt.grid()
+plt.show()
+# # reflection in mirror line y=x
+S = np.array([[0,1],[1,0]])
+print(np.linalg.det(S))
+# transform a by M@a
+newa = S@m1
+print(newa)
+newb = S@m2
+print(newb)
+newM = S@M
+plt.figure()
+plt.plot([0,m1[0]],[0,m1[1]],'r-',linewidth=3)
+plt.plot([0,m2[0]],[0,m2[1]],'g-',linewidth=3)
+plt.plot(M[0],M[1],'b-',linewidth=3)
+plt.plot([0,newa[0]],[0,newa[1]],'r--')
+plt.plot([0,newb[0]],[0,newb[1]],'g--')
+plt.plot(newM[0],newM[1],'b--')
+plt.axis('equal')
+plt.grid()
+plt.show()
+# # reflection in mirror line y=-x
+S = np.array([[0,-1],[-1,0]])
+print(np.linalg.det(S))
+# transform a by M@a
+newa = S@m1
+print(newa)
+newb = S@m2
+print(newb)
+newM = S@M
+plt.figure()
+plt.plot([0,m1[0]],[0,m1[1]],'r-',linewidth=3)
+plt.plot([0,m2[0]],[0,m2[1]],'g-',linewidth=3)
+plt.plot(M[0],M[1],'b-',linewidth=3)
+
+plt.plot([0,newa[0]],[0,newa[1]],'r--')
+plt.plot([0,newb[0]],[0,newb[1]],'g--')
+plt.plot(newM[0],newM[1],'b--')
+plt.axis('equal')
+plt.grid()
+plt.show()
+# reflection in y-axis as a mirror line
+S = np.array([[-1,0],[0,1]])
+print(np.linalg.det(S))
+# transform a by M@a
+newa = S@m1
+print(newa)
+newb = S@m2
+print(newb)
+newM = S@M
+plt.figure()
+plt.plot([0,m1[0]],[0,m1[1]],'r-',linewidth=3)
+plt.plot([0,m2[0]],[0,m2[1]],'g-',linewidth=3)
+plt.plot(M[0],M[1],'b-',linewidth=3)
+plt.plot([0,newa[0]],[0,newa[1]],'r--')
+plt.plot([0,newb[0]],[0,newb[1]],'g--')
+plt.plot(newM[0],newM[1],'b--')
+plt.axis('equal')
+plt.grid()
+plt.show()
+Output:
+[[ 0.41737832 -0.90873282]
+ [-0.90873282 -0.41737832]]
+[[ 1. -0.]
+ [-0.  1.]]
+[[ True  True]
+ [ True  True]]
+[[ 0.41737832]
+ [-0.90873282]] 
+ [[-0.90873282]
+ [-0.41737832]]
+magnitude of m1 is a unit vector  1.0000000000000002
+magnitude of m2 is a unit vector  1.0000000000000002
+[[1.]]
+vector m1 is orthogonal m1.T*m1 = 1
+[[1.]]
+vector m2 is orthogonal m2.T*m2 = 1
+
