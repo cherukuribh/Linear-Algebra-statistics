@@ -1,0 +1,229 @@
+Question 3:
+ (3) The bivariate normal distribution (the 2D version of the multivariate normal distribution) has a 2 × 1 mean vector 𝝁 and a 2 × 2 covariance matrix Σ.
+ (a) Choose 𝛍 and Σ to illustrate your understanding of the ideas in this part. Use numpy to generate a 𝑛 × 2 random sample from the particular bivariate normal distribution with your chosen 𝛍 and Σ. Plot your random sample on a scatterplot. Calculate the sample mean vector and the sample covariance matrix 𝐶 using numpy.cov() and compare these to 𝛍 and Σ. 
+ Chosen mu and sigma and generated nx2 random sample from bivariate normal distribution with mu and sigma. Plotted random sample on the scatter plot. Also calculated sample mean vector and the sample covariance matrix C. Sample covariance matrix is similar to sigma.
+Code:
+import scipy.stats as stats
+import matplotlib.pyplot as plt
+import numpy as np
+mu = np.array([[5], [2]])
+print(mu)
+sigma = np.array([[5, -4], [-4, 8]])
+print(sigma)
+# a) scatter plot using sample
+n = 1000
+sample = stats.multivariate_normal.rvs(size=n,
+                                       mean=mu.flatten(),
+                                       cov=sigma)
+print(sample)
+plt.figure()
+x = sample[:, 0]
+y = sample[:, 1]
+plt.scatter(x, y)
+plt.axis('equal')
+plt.grid()
+plt.show()
+# mean vector
+mean_v = np.mean(sample, axis=0)
+print(mean_v)
+C = np.cov(x, y)
+print(C)
+# covariance matrix is symmetric,
+# correlation is negative so covariance is also negative
+# sample covariance is similar to sigma
+
+Output:
+[[5]
+ [2]]
+[[ 5 -4]
+ [-4  8]]
+[[ 5.55024762  3.53283843]
+ [ 8.79428038 -3.38148669]
+ [ 6.335914   -1.24341306]
+ ...
+ [ 2.65665478  4.09527905]
+ [ 6.57594037  4.59129068]
+ [ 1.40954351  4.32411374]]
+[4.99005472 1.98858195]
+[[ 5.0530946  -4.03793095]
+ [-4.03793095  8.01566425]]
+
+(b) Subtract the mean of each column of the sample from that column; this gives the centred sample 𝑋𝐶. Explain how 𝐶 is related to the matrix product 𝑋𝐶 𝑇𝑋𝐶. Calculate the sample correlation matrix 𝑅 using numpy.corrcoef(). Let 𝐸 be the diagonal matrix consisting of the square roots of the diagonal elements of 𝐶. Explain how 𝑅 can be calculated from 𝐶 and 𝐸 −1 by matrix multiplication. 
+ Splited the columns of the sample which is generated in part (a) , and calculated the mean of each column and subtracted the mean of each column of the sample from that column and stack those columns in to a matrix named XC.
+	Then calculated XCT XC. Also calculated covariance matrix C in part (a). The relation between C and XCT XC is "matrix product of X_c.T and X_c is sample ‘n’ times the Covariance C ".
+	calculated sample correlation matrix R. Also calculated E which is a diagonal matrix consisting of the square root of the diagonal elements of C. The relation between R , E inv and C is "matrix product of E_inv ,C and E_inv Transpose is equals to R ".
+Code:
+# splitting each column and calculating mean for each column
+sample1, sample2 = np.hsplit(sample, 2)
+#print(sample1)
+print(sample1.mean())
+#print(sample2)
+print(sample2.mean())
+# subtract the mean of each column from that column
+sample11=sample1-sample1.mean()
+sample21=sample2-sample2.mean()
+#print(sample11)
+#print(sample21)
+X_c = np.hstack((sample11, sample21))
+print(X_c)
+X_ct = X_c.T
+print(X_ct)
+X_cmul = np.dot(X_c.T,X_c)
+print(X_cmul)
+print(X_cmul/n)
+print("matrix product of X_c.T and X_c is n (sample n) times the Covariance C ")
+print('correlation coefficient R')
+R = np.corrcoef(x, y)
+print(R)
+print(C)
+e1 = np.diag(C)
+e2 = np.sqrt(e1)
+print(e1)
+print(e2)
+E = np.diag(e2)
+print(E)
+E_inv = np.linalg.inv(E)
+print(E_inv)
+print(R)
+print(C)
+R_new=E_inv @ C @ E_inv.T
+print(R_new)
+print(np.isclose(R,R_new))
+print("R can be calculated using E_inv and C --> E_inv @ C @ E_inv.T")
+
+output:
+4.9900547159787
+1.9885819492272123
+[[ 0.56019291  1.54425648]
+ [ 3.80422567 -5.37006864]
+ [ 1.34585929 -3.23199501]
+ ...
+ [-2.33339994  2.1066971 ]
+ [ 1.58588565  2.60270873]
+ [-3.58051121  2.33553179]]
+[[ 0.56019291  3.80422567  1.34585929 ... -2.33339994  1.58588565
+  -3.58051121]
+ [ 1.54425648 -5.37006864 -3.23199501 ...  2.1066971   2.60270873
+   2.33553179]]
+[[ 5048.04150255 -4033.89301564]
+ [-4033.89301564  8007.648585  ]]
+[[ 1262.01037564 -1008.47325391]
+ [-1008.47325391  2001.91214625]]
+matrix product of X_c.T and X_c is  n times the Covariance C 
+correlation coefficient R
+[[ 1.         -0.58105889]
+ [-0.58105889  1.        ]]
+[[ 4.59859054 -3.27545901]
+ [-3.27545901  6.91001989]]
+[4.59859054 6.91001989]
+[2.14443245 2.62869167]
+[[2.14443245 0.        ]
+ [0.         2.62869167]]
+[[0.46632385 0.        ]
+ [0.         0.38041738]]
+[[ 1.         -0.58105889]
+ [-0.58105889  1.        ]]
+[[ 4.59859054 -3.27545901]
+ [-3.27545901  6.91001989]]
+[[ 1.         -0.58105889]
+ [-0.58105889  1.        ]]
+[[ True  True]
+ [ True  True]]
+R can be calculated using E_inv and C --> E_inv @ C @ E_inv.T
+
+(c) Diagonalise the sample covariance matrix 𝐶 as 𝐶 = 𝑃𝐷𝑃 −1 and add the columns of 𝑃 as appropriate vectors on your scatterplot from part (a). Apply this 𝑃 as a matrix transformation to each of the points in the centred sample and plot the transformed points on a new scatterplot. Calculate the sample covariance matrix of the transformed points and therefore explain how the diagonal entries in the matrix 𝐷 can be interpreted in a statistical sense. 
+ Calculating C = PDP-1
+print(C)
+D1, P = np.linalg.eig(C)
+print(P)
+print(D1)
+D = np.diag(D1)
+print(D)
+P_inv = np.linalg.inv(P)
+PDP_inv = P @ D @ P_inv
+print(PDP_inv)
+print(np.isclose(C,PDP_inv))
+print("hence C = PDP_inv")
+ 
+output:
+[[ 5.0530946  -4.03793095]
+ [-4.03793095  8.01566425]]
+[[-0.8198781   0.57253813]
+ [-0.57253813 -0.8198781 ]]
+[ 2.23332245 10.83543639]
+[[ 2.23332245  0.        ]
+ [ 0.         10.83543639]]
+[[ 5.0530946  -4.03793095]
+ [-4.03793095  8.01566425]]
+[[ True  True]
+ [ True  True]]
+hence C = PDP_inv
+	Adding the columns of P as appropriate vectors on the scatter plot from plot (a). 
+Code:
+plt.figure()
+x1 = P[:, 0]
+y1 = P[:, 1]
+plt.scatter(x, y)
+plt.scatter(x1, y1)
+plt.axis('equal')
+plt.grid()
+plt.show()
+
+Plot:
+ 
+	Applied this 𝑃 as a matrix transformation with each of the points in the centred sample and plotted the transformed points on a new scatterplot.
+
+Code:
+print(f'P :{P}')
+a = np.array([P[0][0],P[1][0]])
+print(f'a :{a}')
+b = np.array([P[0][1],P[1][1]])
+print(f'b :{b}')
+
+newa = X_c@a
+print(newa)
+newb = X_c@b
+print(newb)
+
+plt.figure()
+plt.scatter(newa,newb)
+#new scatter plot
+plt.axis('equal')
+plt.grid()
+plt.show()
+
+Output:
+P :[[-0.82073254  0.57131261]
+ [-0.57131261 -0.82073254]]
+a :[-0.82073254 -0.57131261]
+b :[ 0.57131261 -0.82073254]
+
+Plot:
+ 
+	Calculated sample covariance matrix of the transformed points. Diagonal matrix D (Diagonal matrix whose diagonal elements are Eigen values) is equals to the Transformed  matrix P.
+
+Code:
+newP = np.cov(newa,newb)
+print(f'Covariance of transformed P : {newP}')
+print(D)
+print(np.isclose(D,newP))
+print("Diagonal matrix D (Diagonal matrix whose diagonal elements are Eigen values) is equals to the Transformed P")
+Output:
+Covariance of transformed P : [[ 2.13231086 -0.        ]
+ [-0.         11.7357434 ]]
+[[ 2.13231086  0.        ]
+ [ 0.         11.7357434 ]]
+[[ True  True]
+ [ True  True]]
+Diagonal matrix D (Diagonal matrix whose diagonal elements are Eigen values) is equals to the Transformed P
+
+(d) Summarise and critique what you discovered in this part, including how these results depend on your choice of 𝛍 and Σ, and the sample size 𝑛. 
+	Covariance matrix is Symmetric. 
+	Correlation is negative so covariance is also negative.
+	Sample Covariance is equals to sigma.
+	Matrix product of X_c.T and X_c is ‘n’ times the covariance C.
+	R can be calculated using E_inv and C with the matrix multiplication. R = E_inv @ C @ E_inv.T
+	Covariance of transformed P is equals to the Diagonal matrix D ( whose diagonal elements are Eigen values)
+
+	The results depends on the values of  𝛍 , Σ and the sample size n. If I increase sample value n , I can get a scatter plot of so many values which are over lapping on each other.
+	If I increase sigma values , I am getting the values on plot with out overlapping.
